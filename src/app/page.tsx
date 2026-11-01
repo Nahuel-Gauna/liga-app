@@ -37,10 +37,25 @@ export default function Home() {
 
   const agregarEquipo = () => {
     if (nuevoEquipo.trim() === "") return;
-    const nuevo = { pos: equipos.length + 1, nombre: nuevoEquipo, pts: 0, pj: 0, dif: "0" };
+    const nuevo = { pos: 0, nombre: nuevoEquipo, pts: 0, pj: 0, dif: "0" };
     setEquipos([...equipos, nuevo]);
     toast.success(`Equipo "${nuevoEquipo}" guardado`);
     setNuevoEquipo("");
+  };
+
+  const eliminarEquipo = (nombre: string) => {
+    setEquipos(equipos.filter(eq => eq.nombre !== nombre));
+    toast.info(`Equipo "${nombre}" eliminado`);
+  };
+
+  const editarEquipo = (equipoModificado: { pos: number; nombre: string; pts: number; pj: number; dif: string }) => {
+    const equiposActualizados = equipos.map(eq => 
+      eq.nombre === equipoModificado.nombre ? equipoModificado : eq
+    );
+    // Ordenar de mayor a menor según los puntos
+    equiposActualizados.sort((a, b) => b.pts - a.pts);
+    setEquipos(equiposActualizados);
+    toast.success(`Datos de "${equipoModificado.nombre}" actualizados`);
   };
 
   const agregarPartido = () => {
@@ -48,6 +63,13 @@ export default function Home() {
     setPartidos([...partidos, nuevoPartido]);
     toast.success(`Partido guardado: ${nuevoPartido.local} vs ${nuevoPartido.visitante}`);
     setNuevoPartido({ local: "", visitante: "", hora: "", cancha: "" });
+  };
+
+  const eliminarPartido = (index: number) => {
+    const nuevosPartidos = [...partidos];
+    nuevosPartidos.splice(index, 1);
+    setPartidos(nuevosPartidos);
+    toast.info("Partido eliminado");
   };
 
   return (
@@ -63,11 +85,11 @@ export default function Home() {
           </TabsList>
 
           <TabsContent value="posiciones">
-            <TablaPosiciones equipos={equipos} />
+            <TablaPosiciones equipos={equipos} onEliminar={eliminarEquipo} onEditar={editarEquipo} />
           </TabsContent>
 
           <TabsContent value="fixture">
-            <ListaPartidos partidos={partidos} />
+            <ListaPartidos partidos={partidos} onEliminar={eliminarPartido} />
           </TabsContent>
 
           <TabsContent value="admin">
