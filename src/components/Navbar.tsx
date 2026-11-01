@@ -13,7 +13,7 @@ export default function Navbar() {
           <Link href="/" className="text-sm font-medium text-slate-900 hover:text-blue-600 transition-colors">
             Torneos
           </Link>
-          <Link href="#" className="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
+          <Link href="/equipos" className="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
             Equipos
           </Link>
           <Link href="#" className="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
