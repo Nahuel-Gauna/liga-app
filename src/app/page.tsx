@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { equipos as equiposIniciales, partidos as partidosIniciales } from "@/lib/data";
 import TablaPosiciones from "@/components/TablaPosiciones";
 import ListaPartidos from "@/components/ListaPartidos";
+import { toast } from "sonner";
 
 export default function Home() {
   // Estados para Equipos
@@ -26,13 +27,15 @@ export default function Home() {
     if (nuevoEquipo.trim() === "") return;
     const nuevo = { pos: equipos.length + 1, nombre: nuevoEquipo, pts: 0, pj: 0, dif: "0" };
     setEquipos([...equipos, nuevo]);
+    toast.success(`Equipo "${nuevoEquipo}" agregado a la liga`);
     setNuevoEquipo("");
   };
 
   const agregarPartido = () => {
-    if (!nuevoPartido.local || !nuevoPartido.visitante) return; // Validación básica
+    if (!nuevoPartido.local || !nuevoPartido.visitante) return;
     setPartidos([...partidos, nuevoPartido]);
-    setNuevoPartido({ local: "", visitante: "", hora: "", cancha: "" }); // Limpiar formulario
+    toast.success(`Partido programado: ${nuevoPartido.local} vs ${nuevoPartido.visitante}`);
+    setNuevoPartido({ local: "", visitante: "", hora: "", cancha: "" });
   };
 
   return (
