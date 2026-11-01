@@ -4,25 +4,35 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { equipos as equiposIniciales, partidos } from "@/lib/data";
+import { equipos as equiposIniciales, partidos as partidosIniciales } from "@/lib/data";
 import TablaPosiciones from "@/components/TablaPosiciones";
 import ListaPartidos from "@/components/ListaPartidos";
 
 export default function Home() {
+  // Estados para Equipos
   const [equipos, setEquipos] = useState(equiposIniciales);
   const [nuevoEquipo, setNuevoEquipo] = useState("");
 
+  // Estados para Partidos
+  const [partidos, setPartidos] = useState(partidosIniciales);
+  const [nuevoPartido, setNuevoPartido] = useState({
+    local: "",
+    visitante: "",
+    hora: "",
+    cancha: ""
+  });
+
   const agregarEquipo = () => {
     if (nuevoEquipo.trim() === "") return;
-    const nuevo = {
-      pos: equipos.length + 1,
-      nombre: nuevoEquipo,
-      pts: 0,
-      pj: 0,
-      dif: "0"
-    };
+    const nuevo = { pos: equipos.length + 1, nombre: nuevoEquipo, pts: 0, pj: 0, dif: "0" };
     setEquipos([...equipos, nuevo]);
     setNuevoEquipo("");
+  };
+
+  const agregarPartido = () => {
+    if (!nuevoPartido.local || !nuevoPartido.visitante) return; // Validación básica
+    setPartidos([...partidos, nuevoPartido]);
+    setNuevoPartido({ local: "", visitante: "", hora: "", cancha: "" }); // Limpiar formulario
   };
 
   return (
@@ -46,15 +56,48 @@ export default function Home() {
           </TabsContent>
 
           <TabsContent value="admin">
-            <div className="border rounded-md p-4 space-y-4">
-              <h2 className="font-semibold text-lg text-center mb-4">Agregar Nuevo Equipo</h2>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Nombre del equipo..."
-                  value={nuevoEquipo}
-                  onChange={(e) => setNuevoEquipo(e.target.value)}
-                />
-                <Button onClick={agregarEquipo}>Agregar</Button>
+            <div className="space-y-6">
+              {/* Formulario de Equipos */}
+              <div className="border rounded-md p-4 space-y-4 bg-slate-50">
+                <h2 className="font-semibold text-lg text-center">Agregar Nuevo Equipo</h2>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Nombre del equipo..."
+                    value={nuevoEquipo}
+                    onChange={(e) => setNuevoEquipo(e.target.value)}
+                  />
+                  <Button onClick={agregarEquipo}>Agregar</Button>
+                </div>
+              </div>
+
+              {/* Formulario de Partidos */}
+              <div className="border rounded-md p-4 space-y-4 bg-slate-50">
+                <h2 className="font-semibold text-lg text-center">Programar Partido</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  <Input
+                    placeholder="Equipo Local"
+                    value={nuevoPartido.local}
+                    onChange={(e) => setNuevoPartido({ ...nuevoPartido, local: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Equipo Visitante"
+                    value={nuevoPartido.visitante}
+                    onChange={(e) => setNuevoPartido({ ...nuevoPartido, visitante: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Hora (ej: 21:00)"
+                    value={nuevoPartido.hora}
+                    onChange={(e) => setNuevoPartido({ ...nuevoPartido, hora: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Cancha (ej: Cancha 1)"
+                    value={nuevoPartido.cancha}
+                    onChange={(e) => setNuevoPartido({ ...nuevoPartido, cancha: e.target.value })}
+                  />
+                </div>
+                <Button className="w-full mt-2" onClick={agregarPartido}>
+                  Agregar al Fixture
+                </Button>
               </div>
             </div>
           </TabsContent>
